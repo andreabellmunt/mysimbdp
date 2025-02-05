@@ -1,0 +1,71 @@
+version: "2"
+
+services:
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.8
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka0:
+    image: docker.io/bitnami/kafka:2.8
+    ports:
+      - "9092:9092"
+    volumes:
+      - "kafka0_data:/bitnami"
+    environment:
+      - KAFKA_BROKER_ID=0
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://kafka0:19092,EXTERNAL://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka0:19092,EXTERNAL://localhost:9092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+
+  kafka1:
+    image: docker.io/bitnami/kafka:2.8
+    ports:
+      - "9093:9092"
+    volumes:
+      - "kafka1_data:/bitnami"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://kafka1:19092,EXTERNAL://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka1:19092,EXTERNAL://localhost:9093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+
+  kafka2:
+    image: docker.io/bitnami/kafka:2.8
+    ports:
+      - "9094:9092"
+    volumes:
+      - "kafka2_data:/bitnami"
+    environment:
+      - KAFKA_BROKER_ID=2
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://kafka2:19092,EXTERNAL://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka2:19092,EXTERNAL://localhost:9094
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka0_data:
+    driver: local
+  kafka1_data:
+    driver: local
+  kafka2_data:
+    driver: local
