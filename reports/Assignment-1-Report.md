@@ -28,7 +28,7 @@ By using Cassandra as the **mysimbdp-coredms** it is possible to configure it so
 
 For data replication within **mysimbdp-coredms**, considering we have established the existance of 3 different nodes to prevent a single-point-of-failure problem, the idea is to provide data replication in all of the existing nodes. So, we have Replication Factor = 2.  
 
-Apache Kafka also provides the option to replicate data being ingested at topic level by using more than one broker in a cluster. In this platform, it is assumed that data replication should be able to handle one broker failing. For this reason, Replication Factor = 2 is considered, meaning we use 3 brokers in a cluster. One of them is the leader, which performs all read and write operations. Then, it is important to use In-Sync Replicas to ensure that the other brokers which are not leaders synchronize with the changes done in the leader. If the leader fails, we would still have two brokers, one of which would be the new leader.
+Apache Kafka also provides the option to replicate data being ingested at topic level by using more than one broker in a cluster. In this platform, it is assumed that data replication should be able to handle one broker failing. For this reason, we use 3 brokers in a cluster. One of them is the leader, which performs all read and write operations. Then, it is important to use In-Sync Replicas to ensure that the other brokers which are not leaders synchronize with the changes done in the leader. If the leader fails, we would still have two brokers, one of which would be the new leader.
 
 ### Deployment of **mysimbdp-dataingest**
 
@@ -40,10 +40,10 @@ The main downside of this approach is that if the upload frequency increases sig
 
 # Implementation 
 
+## 
 
 
-
-# Extention 
+# Extension 
 
 # References
 

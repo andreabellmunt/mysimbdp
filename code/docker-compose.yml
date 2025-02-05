@@ -60,6 +60,13 @@ services:
     depends_on:
       - zookeeper
 
+  producer: 
+    build: ./producer
+    depends_on:
+      - kafka0
+    volumes: 
+      - ../data:/app/data
+
 volumes:
   zookeeper_data:
     driver: local
