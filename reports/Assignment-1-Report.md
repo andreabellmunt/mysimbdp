@@ -32,10 +32,6 @@ Apache Kafka also provides the option to replicate data being ingested at topic 
 
 ### Deployment of **mysimbdp-dataingest**
 
-From current observations, we know that the tenant data sources are stored in a cloud folder. It is also assumed that new `.csv` files are uploaded with low frequency, as attack simulations and the transformation of `.pcap` to `.csv` files require time. For this reason, the deployment of **mysimbdp-dataingest** is triggered by the addition of a new `.csv`file in the cloud folder. To do that automatically, Python for instance has a library called `watchdog` that allows to track changes in a directory and trigger another function in the case the new changes correspond to new files of the wanted type. This means as well that the deployment needs to be defined close to the data. 
-
-The advantages of this method are that it is done automatically and it is simple to implement and maintain. 
-The main downside of this approach is that if the upload frequency increases significantly, adding new files per second, perhaps not all changes would be tracked. If using cloud, event-based triggers supported by the cloud could be used. 
 
 
 # Implementation 

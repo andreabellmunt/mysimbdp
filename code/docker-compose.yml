@@ -1,5 +1,22 @@
 version: "2"
 
+# Cassandra part extracted from https://github.com/rdsea/bigdataplatforms/blob/master/tutorials/basiccassandra/apache-compose.yml 
+x-cassandra: &cassandras
+  CASSANDRA_CLUSTER_NAME: assignment1
+  CASSANDRA_SEEDS: cassandra0
+  HEAP_NEWSIZE: 1M
+  MAX_HEAP_SIZE: 512M
+  CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+    
+x-expose: &exposes
+    - "7000" 
+    - "7001" 
+    - "7199" 
+    - "9042" 
+    - "9142" 
+    - "9160" 
+
+
 services:
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
@@ -62,36 +79,41 @@ services:
 
   cassandra0:
     image: cassandra:latest
-    ports:
+    hostname: cassandra0
+    environment: 
+      <<: *cassandras
+      CASSANDRA_DC: DC1   
+    expose: *exposes
+    ports: 
       - "9042:9042"
-    environment:
-      CASSANDRA_CLUSTER_NAME: assignment1
-      CASSANDRA_SEEDS: cassandra0
-      CASSANDRA_ENDPOINT_SWITCH: SimpleSnitch #SimpleStrategy 
-    volumes: 
-      - cassandra0_data:/var/lib/cassandra
 
   cassandra1:
     image: cassandra:latest
-    ports:
+    hostname: cassandra1
+    environment: 
+      <<: *cassandras
+      CASSANDRA_DC: DC1   
+    expose: *exposes      
+    ports: 
       - "9043:9042"
-    environment:
-      CASSANDRA_CLUSTER_NAME: assignment1
-      CASSANDRA_SEEDS: cassandra0
-      CASSANDRA_ENDPOINT_SWITCH: SimpleSnitch #SimpleStrategy 
-    volumes: 
-      - cassandra1_data:/var/lib/cassandra
+    restart: always
+    depends_on: 
+      - cassandra0
+    
 
   cassandra2:
     image: cassandra:latest
-    ports:
+    hostname: cassandra2
+    environment: 
+      <<: *cassandras
+      CASSANDRA_DC: DC2 
+    expose: *exposes
+    restart: always
+  
+    depends_on: 
+      - cassandra0 
+    ports: 
       - "9044:9042"
-    environment:
-      CASSANDRA_CLUSTER_NAME: assignment1
-      CASSANDRA_SEEDS: cassandra0
-      CASSANDRA_ENDPOINT_SWITCH: SimpleSnitch #SimpleStrategy 
-    volumes: 
-      - cassandra2_data:/var/lib/cassandra
 
 
   producer: 
@@ -103,20 +125,18 @@ services:
   
   api: 
     build: ./api
+    ports:
+      - "8080:8080"
     depends_on: 
       - cassandra0
       - cassandra1
       - cassandra2
-    volumes: 
-      - ../data:/app/data
 
   consumer: 
     build: ./consumer
     depends_on: 
       - kafka0
       - api
-    volumes: 
-      - ../data:/app/data
 
 volumes:
   zookeeper_data:
@@ -126,10 +146,4 @@ volumes:
   kafka1_data:
     driver: local
   kafka2_data:
-    driver: local
-  cassandra0_data:
-    driver: local
-  cassandra1_data:
-    driver: local
-  cassandra2_data:
     driver: local
