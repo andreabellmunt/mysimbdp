@@ -4,6 +4,8 @@ from confluent_kafka import Consumer
 import requests
 import json 
 import math 
+import time
+
 
 def transform_sample(data): # pass all to null or string 
     if isinstance(data, dict):
@@ -35,12 +37,13 @@ if __name__ == '__main__':
     topic = "network_packet"
     API_URL = "http://api:8080/cassandra"
 
+
     conf = {
         'bootstrap.servers': broker, 
         'group.id': group_id,
-        'auto_offset_reset': 'earliest',
-        }
-    print("Hello")
+        'auto.offset.reset': 'earliest',
+    }
+
     c = Consumer(**conf)
     c.subscribe([topic])
 

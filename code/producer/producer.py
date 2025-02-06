@@ -8,7 +8,7 @@ import json
 if __name__ == '__main__':
     broker = 'kafka0:19092' # first broker connection 
     topic = "network_packet"
-    csv_file = "./data/test.csv" #!!! CHANGE 
+    csv_file = "./data/UNSW-NB15_4.csv" 
 
     conf = {'bootstrap.servers': broker}
 

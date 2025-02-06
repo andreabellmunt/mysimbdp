@@ -6,10 +6,6 @@ import uuid
 
 app = FastAPI()
 
-@app.get("/health") # check running 
-async def health_check():
-    return {"status": "ok"}
-
 
 @app.post("/cassandra")
 async def save_packet(packet: PacketIn, db: Session = Depends(get_db)):

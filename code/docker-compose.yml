@@ -1,5 +1,3 @@
-version: "2"
-
 # Cassandra part extracted from https://github.com/rdsea/bigdataplatforms/blob/master/tutorials/basiccassandra/apache-compose.yml 
 x-cassandra: &cassandras
   CASSANDRA_CLUSTER_NAME: assignment1

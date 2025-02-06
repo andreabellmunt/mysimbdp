@@ -75,7 +75,7 @@ class CassandraConnection:
         """) 
 
         return self.session
-    
+
     async def disconnect(self):
         if self.cluster:
             self.cluster.shutdown()
