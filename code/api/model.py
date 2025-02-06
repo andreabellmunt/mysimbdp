@@ -2,56 +2,57 @@ from pydantic import BaseModel, Field
 from uuid import UUID, uuid4 
 from typing import Optional 
 
+
 class PacketBase(BaseModel):
     srcip: Optional[str] = None
-    sport: Optional[int] = None
+    sport: Optional[str] = None
     dstip: Optional[str] = None
-    dsport: Optional[int] = None
+    dsport: Optional[str] = None
     proto: Optional[str] = None 
     state: Optional[str] = None 
     dur: Optional[str] = None
-    sbytes: Optional[int] = None
-    dbytes: Optional[int] = None
-    sttl: Optional[int] = None              
-    dttl: Optional[int] = None 
-    sloss: Optional[int] = None 
-    dloss: Optional[int] = None
+    sbytes: Optional[str] = None
+    dbytes: Optional[str] = None
+    sttl: Optional[str] = None              
+    dttl: Optional[str] = None 
+    sloss: Optional[str] = None 
+    dloss: Optional[str] = None
     service: Optional[str] = None
     sload: Optional[str] = None
     dload: Optional[str] = None
-    spkts: Optional[int] = None            
-    dpkts: Optional[int] = None
-    swin: Optional[int] = None
-    dwin: Optional[int] = None
-    stcpb: Optional[int] = None            
-    dtcpb: Optional[int] = None
-    smeansz: Optional[int] = None
-    dmeansz: Optional[int] = None
-    trans_depth: Optional[int] = None 
-    res_bdy_len: Optional[int] = None          
+    spkts: Optional[str] = None            
+    dpkts: Optional[str] = None
+    swin: Optional[str] = None
+    dwin: Optional[str] = None
+    stcpb: Optional[str] = None            
+    dtcpb: Optional[str] = None
+    smeansz: Optional[str] = None
+    dmeansz: Optional[str] = None
+    trans_depth: Optional[str] = None 
+    res_bdy_len: Optional[str] = None          
     sjit: Optional[str] = None 
     djit: Optional[str] = None 
-    stime: Optional[int] = None
-    ltime: Optional[int] = None
+    stime: Optional[str] = None
+    ltime: Optional[str] = None
     sintpkt: Optional[str] = None      
     dintpkt: Optional[str] = None
     tcprtt: Optional[str] = None
     synack: Optional[str] = None 
     ackdat: Optional[str] = None           
-    is_sm_ips_ports: Optional[bool] = None
-    ct_state_ttl: Optional[int] = None
-    ct_flw_http_mthd: Optional[int] = None
-    is_ftp_login: Optional[bool] = None            
-    ct_ftp_cmd: Optional[int] = None
-    ct_srv_src: Optional[int] = None
-    ct_srv_dst: Optional[int] = None
-    ct_dst_ltm: Optional[int] = None
-    ct_src_ltm: Optional[int] = None
-    ct_src_dport_ltm: Optional[int] = None 
-    ct_dst_sport_ltm: Optional[int] = None
-    ct_dst_src_ltm: Optional[int] = None
+    is_sm_ips_ports: Optional[str] = None
+    ct_state_ttl: Optional[str] = None
+    ct_flw_http_mthd: Optional[str] = None
+    is_ftp_login: Optional[str] = None            
+    ct_ftp_cmd: Optional[str] = None
+    ct_srv_src: Optional[str] = None
+    ct_srv_dst: Optional[str] = None
+    ct_dst_ltm: Optional[str] = None
+    ct_src_ltm: Optional[str] = None
+    ct_src_dport_ltm: Optional[str] = None 
+    ct_dst_sport_ltm: Optional[str] = None
+    ct_dst_src_ltm: Optional[str] = None
     attack_cat: Optional[str] = None
-    label: Optional[bool] = None
+    label: Optional[str] = None
 
 class PacketIn(PacketBase): 
     pass
