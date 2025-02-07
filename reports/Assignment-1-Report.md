@@ -9,6 +9,8 @@ More specifically, the UNSW-NB15 dataset includes 49 different features extracte
 
 The idea is to develop a platform that ingests and stores data that can be later used for training models that classify the nature of network traffic. As the training of DL models is improved by large amounts of data, the platform should be prepared to handle the storing of thousands of entries, and this size could only increase even more. 
 
+To obtain the dataset: https://research.unsw.edu.au/projects/unsw-nb15-dataset 
+
 ### **mysimbdp** architecture
 The architecture used for this platform is the following: 
 
@@ -22,21 +24,29 @@ Once the data is stored, the rest of the architecture is contemplated to be an i
 
 ### **mysimbdp-coredms** configuration 
 
-By using Cassandra as the **mysimbdp-coredms** it is possible to configure it so that there are multiple nodes within a cluster that provide protection to having a single-point-of-failure problem. Considering our architecture, **mysimbdp-coredms** configuration contains 3 separate nodes within the cluster using SimpleStrategy, which is the replication strategy used when having a single location. This means that when a node fails, there is still more than one node that can take over automatically.  
+To prevent a single-point-of-failure problem, the cluster formed within **mysimbdp-coredms** can contain more than one node. In this design, 3 different nodes are contemplated. They are placed in different data centers to enhance disaster recovery. Moreover, there is communication between nodes thorugh gossiping to be able to know about the failure of one of the nodes. 
 
 ### Data replication 
 
-For data replication within **mysimbdp-coredms**, considering we have established the existance of 3 different nodes to prevent a single-point-of-failure problem, the idea is to provide data replication in all of the existing nodes. So, we have Replication Factor = 2.  
-
-Apache Kafka also provides the option to replicate data being ingested at topic level by using more than one broker in a cluster. In this platform, it is assumed that data replication should be able to handle one broker failing. For this reason, we use 3 brokers in a cluster. One of them is the leader, which performs all read and write operations. Then, it is important to use In-Sync Replicas to ensure that the other brokers which are not leaders synchronize with the changes done in the leader. If the leader fails, we would still have two brokers, one of which would be the new leader.
+For data replication within **mysimbdp-coredms**, considering we have established the existance of 3 different nodes to prevent a single-point-of-failure problem, the idea is to provide data replication in all of the existing nodes. This ensures that each piece of data is available on multiple nodes, providing fault tolerance and high availability. If one node fails, the remaining nodes can still serve read and write requests. 
 
 ### Deployment of **mysimbdp-dataingest**
 
+As for the **mysimbdp-dataingest**, the deployment is ensured with Docker. The producer and consumers are also defined close to the brokers. The advanatages of this approach is having the possibility to scale dynamically and that latency might no be very high because of the proximity. However, the main issues is that there might be a problem with high ingestion rates and, if deployed, the containers need to be monitored to avoid/ handle the exhaustion of resources. 
 
 
 # Implementation 
 
-## 
+## Data schema 
+
+
+## Data partitioning schema 
+
+
+## Data source emulation 
+
+
+## Dealing with failures 
 
 
 # Extension 
