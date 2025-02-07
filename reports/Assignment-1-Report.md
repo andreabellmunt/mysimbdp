@@ -39,17 +39,49 @@ As for the **mysimbdp-dataingest**, the deployment is ensured with Docker. The p
 
 ## Data schema 
 
+Considering the fact that we are using the UNSW-NB15 dataset, we can get one of its samples to do this example. 
+
+First of all, the producer receives an object as a row in the `.csv` file: 
+
+> 59.166.0.9,9685,149.171.126.2,80,tcp,FIN,5.864748,19410,1087890,31,29,2,370,http,26404.54492,1481982.875,364,746,255,255,389619597,394688654,53,1458,1,0,1031.366423,690.219581,1424250003,1424250009,16.155447,7.871279,0.000771,0.000638,0.000133,0,0,1,, ,3,1,4,4,1,1,1,,0
+
+The idea is that, to better understand the data in **mysimbdp-coredms** and make the future preprocessing easier, the names of the columns are added. However, all columns are going to be saved as a string within the data schema. The main reason for doing it this way is because by using a string there will not be any intermediate transformation or issue with data types such as floats. Intermediate processes include using an API, in which data is in a JSON format. Moreover, depending on the future training of the model, data will be preprocessed one way or another. Setting the same data type for all allows to handle the data more easily since the beginning. 
+
+Consider that apart from the already known features and labels, the `db` schema also contains an `id`, generated with `uuid`. 
+
+In  **mysimbdp-coredms**, data is saved in the table `packets` and the structure is included in the file `code/api/cassandra-settings.py`. As there are 49 different attributes, it is better to not include it here. 
 
 ## Data partitioning schema 
 
+For **mysimbdp-coredms**, data is replicated within all the nodes and no data partitioning is considered. The reason for this is to simplify the possible queries that might need to be done by third-party providers to extract the data, and provide consistency among all nodes. 
 
 ## Data source emulation 
+
+Having implemented the code, the atomic data element to be stored is a network packet represented as: 
+
+>id (uuid), srcip (text),sport (text),dstip (text),dsport (text),proto (text), state (text), dur (text),sbytes (text),dbytes (text),sttl (text), dttl (text), sloss (text), dloss (text), service (text),sload (text), dload (text), spkts (text), dpkts (text), swin (text), dwin (text), stcpb (text),dtcpb (text),smeansz (text), dmeansz (text), trans_depth (text), res_bdy_len (text),  sjit (text), djit (text), stime (text), ltime (text), sintpkt (text), dintpkt (text),tcprtt (text),synack (text), ackdat (text),is_sm_ips_ports (text),ct_state_ttl (text), ct_flw_http_mthd (text), is_ftp_login (text), ct_ftp_cmd (text), ct_srv_src (text),ct_srv_dst (text), ct_dst_ltm (text),ct_src_ltm (text), ct_src_dport_ltm (text), ct_dst_sport_ltm (text),ct_dst_src_ltm (text),attack_cat (text), label (text)
+
+With Cassandra there are possible consistency options. The most popular ones are ONE, QUORUM, and ALL. For this project, we use consistency 'ONE', to have better writing speed and to ensure high availability, as the operations performed only need the support of one node. The following link provides more information about all of them: https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html 
 
 
 ## Dealing with failures 
 
+To avoid dealing with issues in performance, there can be different solutions that can be implemented. First of all, Kafka partitions could be increased, as it would increase the parallelism in ingestion. Then, it could be also better to perform the operations that now have been done individually in bigger batches. That way the overhead experienced when using the API from the consumer and to Cassandra would be significantly lower. Then, if data were to increase a lot, Cassandra nodes could also increase. 
+
 
 # Extension 
+
+## Lineage data 
+
+## Tenant-related data 
+
+## Service and data discovery feature 
+
+
+## mysimbdp-daas
+
+
+## Hot and cold space 
 
 # References
 
