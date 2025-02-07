@@ -71,17 +71,45 @@ To avoid dealing with issues in performance, there can be different solutions th
 
 # Extension 
 
-## Lineage data 
+## Data lineage
+
+Metadata could be used to be able to understand the origin of the data, the possible modifications, and the destination of the pipeline. So, more specifically, we could have as metadata: 
+
+- source_filename: Name of the .csv file where the sample is from 
+- source_location: Directory where the source_filename is located
+- ingestion_time: Timestamp giving the time for the ingestion 
+- transformations: List with descriptive message/s of the transformation/s
+- db_table: Destination database table 
+- tenant_id: ID of the tenant 
+- sample_id: ID of the referenced sample
+
+An example could be: 
+
+> { "source_filename": "UNSW-NB15_4.csv", "source_location": "/data", "ingestion_time": 20250207, "transformations": '["removed empty strings"]', "db_table": "packets", "tenant_id": 0, "sample_id": 23456}
+
+Supporting metadata could be done by creating a metadata table and recording relevant metadata along the data pipeline to later on store it properly. 
 
 ## Tenant-related data 
 
+To support multi-tenant architectures in which each tenant would get a dedicated instance of **mysimbdp-coredms**, we need a service discovery mechanism. Using, for instance, ZooKeeper, we could dynamically register and get the database endpoints for each tenant. To do that, we would need to have a service registry every time a new tenant joins. The data schema could follow the following: 
+
+- tenant_id: ID of the tenant
+- mysimbdp-coredms-endpoint: Cassandra node in which it has been assigned
+- connection_det: Additional details for connecting to db 
+
+
 ## Service and data discovery feature 
 
+To change **mysimbdp-dataingest** so that it has service discovery, we could also use one of the tools mentioned before. **mysimbdp-dataingest** should be changed so that it queries the service registry to obtain possible ingestion endpoints. The choice could be done based on specific criteria, like reducing latency. 
 
 ## mysimbdp-daas
 
+This exact design has already been implemented in my project for the writing to **mysimbdp-coredms** part. As for the design included in the beginning, it would not change. Based on the implementation, we would need to also implement a GET request to `/cassandra` to be able to properly query data from the Cassandra nodes. 
 
 ## Hot and cold space 
+
+To automatically move data between hot and cold storage in **mysimbdp-coredms**, constraints like access frequency could be used. For example, data accessed within the last 10 days would stay in hot storage, while older data would be moved to cold storage. To implement this, we could have a scheduler, which evaluates data against rules, migrates outdated data to cold storage, and updates metadata.
+
 
 # References
 
